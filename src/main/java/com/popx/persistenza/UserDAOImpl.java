@@ -2,25 +2,30 @@ package com.popx.persistenza;
 
 import com.popx.modello.UserBean;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UserDAOImpl implements UserDAO<UserBean> {
+
     private DataSource ds;
 
-
+    /*@
+      @ ensures this.ds != null;
+      @*/
     public UserDAOImpl() {
         this.ds = DataSourceSingleton.getInstance();
     }
 
-
+    /*@
+      @ also
+      @ public normal_behavior
+      @ requires email != null && !email.isEmpty();
+      @ ensures \result == null
+      @      || \result.getEmail().equals(email);
+      @ signals (SQLException) true;
+      @*/
     @Override
     public UserBean getUserByEmail(String email) throws SQLException {
         String query = "SELECT * FROM UtenteRegistrato WHERE email = ?";
@@ -40,38 +45,49 @@ public class UserDAOImpl implements UserDAO<UserBean> {
         return null;
     }
 
+    /*@
+      @ also
+      @ public normal_behavior
+      @ requires user != null;
+      @ requires user.getEmail() != null && !user.getEmail().isEmpty();
+      @ ensures \result == true || \result == false;
+      @ signals (SQLException) true;
+      @*/
     @Override
     public boolean saveUser(UserBean user) throws SQLException {
         String userQuery = "INSERT INTO UtenteRegistrato (username, email, password, role) VALUES (?, ?, ?, ?)";
         String clienteQuery = "INSERT INTO Cliente (utente_registrato_email) VALUES (?)";
 
         try (Connection conn = ds.getConnection()) {
-            conn.setAutoCommit(false); // Disabilita l'auto-commit per supportare le transazioni
+            conn.setAutoCommit(false);
 
             try (PreparedStatement userStmt = conn.prepareStatement(userQuery);
                  PreparedStatement clienteStmt = conn.prepareStatement(clienteQuery)) {
 
-                // Inserimento in UtenteRegistrato
                 userStmt.setString(1, user.getUsername());
                 userStmt.setString(2, user.getEmail());
                 userStmt.setString(3, com.popx.servizio.SecurityService.hashPassword(user.getPassword()));
-                userStmt.setString(4, "User"); // Ruolo di default 'User'
+                userStmt.setString(4, "User");
                 userStmt.executeUpdate();
 
-                // Inserimento in Cliente
                 clienteStmt.setString(1, user.getEmail());
                 clienteStmt.executeUpdate();
 
-                conn.commit(); // Commit delle modifiche
+                conn.commit();
                 return true;
+
             } catch (SQLException e) {
-                conn.rollback(); // Rollback in caso di errore
+                conn.rollback();
                 throw e;
             }
         }
     }
 
-    // Metodo disponibile solo in UserDAOImpl
+    /*@
+      @ public normal_behavior
+      @ ensures \result != null;
+      @ signals (SQLException) true;
+      @*/
     public List<UserBean> getAllUsers() throws SQLException {
         List<UserBean> users = new ArrayList<>();
         String query = "SELECT * FROM UtenteRegistrato";
@@ -89,6 +105,4 @@ public class UserDAOImpl implements UserDAO<UserBean> {
         }
         return users;
     }
-
 }
-
