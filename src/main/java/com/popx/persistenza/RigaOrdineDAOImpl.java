@@ -14,13 +14,25 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
 
     private DataSource ds;
 
+    /*@ public model boolean available;
+      @ public invariant ds != null && available;
+      @ represents available <- ds != null;
+      @*/
 
     public RigaOrdineDAOImpl() {
         this.ds = DataSourceSingleton.getInstance();
-
-    } // Usa il DataSource fornito sopra
+    }
 
     @Override
+    /*@ public normal_behavior
+      @   requires rigaOrdine != null
+      @        && rigaOrdine.getOrdineId() > 0
+      @        && rigaOrdine.getProdottoId() != null && !rigaOrdine.getProdottoId().isEmpty()
+      @        && rigaOrdine.getQuantity() >= 0
+      @        && rigaOrdine.getUnitaryCost() >= 0;
+      @   assignable \everything;
+      @   ensures available;
+      @*/
     public void addRigaOrdine(RigaOrdineBean rigaOrdine) {
         String query = "INSERT INTO RigaOrdine (ordine_id, prodotto_id, quantity, unitary_cost) VALUES (?, ?, ?, ?)";
 
@@ -40,6 +52,18 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
     }
 
     @Override
+    /*@ public normal_behavior
+      @   requires ordineId > 0;
+      @   assignable \everything;
+      @   ensures \result != null
+      @        && (\forall int i; 0 <= i && i < \result.size();
+      @              \result.get(i) != null
+      @           && \result.get(i).getOrdineId() == ordineId
+      @           && \result.get(i).getQuantity() >= 0
+      @           && \result.get(i).getUnitaryCost() >= 0
+      @           && \result.get(i).getProdottoId() != null
+      @           && !\result.get(i).getProdottoId().isEmpty());
+      @*/
     public List<RigaOrdineBean> getRigheOrdineByOrdineId(int ordineId) {
         String query = "SELECT * FROM RigaOrdine WHERE ordine_id = ?";
         List<RigaOrdineBean> righeOrdine = new ArrayList<>();
@@ -67,6 +91,15 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
     }
 
     @Override
+    /*@ public normal_behavior
+      @   requires rigaOrdine != null
+      @        && rigaOrdine.getOrdineId() > 0
+      @        && rigaOrdine.getProdottoId() != null && !rigaOrdine.getProdottoId().isEmpty()
+      @        && rigaOrdine.getQuantity() >= 0
+      @        && rigaOrdine.getUnitaryCost() >= 0;
+      @   assignable \everything;
+      @   ensures available;
+      @*/
     public void updateRigaOrdine(RigaOrdineBean rigaOrdine) {
         String query = "UPDATE RigaOrdine SET quantity = ?, unitary_cost = ? WHERE ordine_id = ? AND prodotto_id = ?";
 
@@ -86,6 +119,12 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
     }
 
     @Override
+    /*@ public normal_behavior
+      @   requires ordineId > 0
+      @        && prodottoId != null && !prodottoId.isEmpty();
+      @   assignable \everything;
+      @   ensures available;
+      @*/
     public void deleteRigaOrdine(int ordineId, String prodottoId) {
         String query = "DELETE FROM RigaOrdine WHERE ordine_id = ? AND prodotto_id = ?";
 
@@ -102,4 +141,3 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
         }
     }
 }
-
