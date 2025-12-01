@@ -84,8 +84,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>9</source> <!-- Versione minima di Java -->
-                    <target>9</target>
+                    <source>21</source>
+                    <target>21</target>
+                    <release>21</release>  <!-- forza uso api di java 21-->
                 </configuration>
             </plugin>
         </plugins>
