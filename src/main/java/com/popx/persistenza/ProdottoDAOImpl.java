@@ -242,7 +242,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
       @*/
     public List<ProdottoBean> getRandomProducts(int limit) throws SQLException {
         List<ProdottoBean> products = new ArrayList<>();
-        String query = "SELECT * FROM prodotto ORDER BY RAND() LIMIT ?";  // Usato ORDER BY RAND() per ottenere risultati casuali
+        String query = "SELECT * FROM Prodotto ORDER BY RAND() LIMIT ?";  // Usato ORDER BY RAND() per ottenere risultati casuali
 
         try (Connection con = ds.getConnection(); // Assicurati che ds sia un DataSource valido
              PreparedStatement ps = con.prepareStatement(query)) {
