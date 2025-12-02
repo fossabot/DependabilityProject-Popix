@@ -1,0 +1,13 @@
+<Context>
+    <Resource
+            name="jdbc/Popix"
+            auth="Container"
+            type="javax.sql.DataSource"
+            driverClassName="com.mysql.cj.jdbc.Driver"
+            url="${POPIX_DB_URL}"
+            username="${POPIX_DB_USER}"
+            password="${POPIX_DB_PASS}"
+            maxTotal="50"
+            maxIdle="10"
+            maxWaitMillis="10000" />
+</Context>

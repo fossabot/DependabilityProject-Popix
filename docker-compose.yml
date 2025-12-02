@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
 
   db:
@@ -7,7 +5,7 @@ services:
     container_name: popix-mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: Popix
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
@@ -15,18 +13,35 @@ services:
       - ./src/database:/docker-entrypoint-initdb.d
     networks:
       - popix-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
 
   app:
     build: .
     container_name: popix-tomcat
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
+      # Variabili accessibili via System.getenv()
       POPIX_DB_URL: ${POPIX_DB_URL}
       POPIX_DB_USER: ${MYSQL_USER}
       POPIX_DB_PASS: ${MYSQL_PASSWORD}
+
+      # Variabili per Tomcat (sostituzione in ROOT.xml)
+      # La sintassi '>-' unisce le righe togliendo gli a capo.
+      # Le virgolette interne proteggono i caratteri speciali come '&'
+      CATALINA_OPTS: >-
+        -DPOPIX_DB_URL="${POPIX_DB_URL}"
+        -DPOPIX_DB_USER="${MYSQL_USER}"
+        -DPOPIX_DB_PASS="${MYSQL_PASSWORD}"
+
     ports:
       - "8080:8080"
-    depends_on:
-      - db
     networks:
       - popix-net
 
