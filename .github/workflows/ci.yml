@@ -5,13 +5,18 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - '**/*.md'
-      - 'docs/**'
+      - 'deliverables/**'
+      - '.gitignore'
+      - '.dockerignore'
 
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - '**/*.md'
-      - 'docs/**'
+      - 'deliverables/**'
+      - '.gitignore'
+      - '.dockerignore'
+
 
 jobs:
   build:
