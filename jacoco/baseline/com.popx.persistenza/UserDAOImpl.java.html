@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDAOImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">popix</a> &gt; <a href="index.source.html" class="el_package">com.popx.persistenza</a> &gt; <span class="el_source">UserDAOImpl.java</span></div><h1>UserDAOImpl.java</h1><pre class="source lang-java linenums">package com.popx.persistenza;
+
+import com.popx.modello.UserBean;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserDAOImpl implements UserDAO&lt;UserBean&gt; {
+
+    private DataSource ds;
+
+    /*@
+      @ ensures this.ds != null;
+      @*/
+<span class="fc" id="L17">    public UserDAOImpl() {</span>
+<span class="fc" id="L18">        this.ds = DataSourceSingleton.getInstance();</span>
+<span class="fc" id="L19">    }</span>
+
+    /*@
+      @ also
+      @ public normal_behavior
+      @ requires email != null &amp;&amp; !email.isEmpty();
+      @ ensures \result == null
+      @      || \result.getEmail().equals(email);
+      @ signals (SQLException) true;
+      @*/
+    @Override
+    public UserBean getUserByEmail(String email) throws SQLException {
+<span class="fc" id="L31">        String query = &quot;SELECT * FROM UtenteRegistrato WHERE email = ?&quot;;</span>
+<span class="fc" id="L32">        try (Connection conn = ds.getConnection();</span>
+<span class="fc" id="L33">             PreparedStatement stmt = conn.prepareStatement(query)) {</span>
+<span class="fc" id="L34">            stmt.setString(1, email);</span>
+<span class="fc" id="L35">            ResultSet rs = stmt.executeQuery();</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L37">                return new UserBean(</span>
+<span class="nc" id="L38">                        rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L39">                        rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L40">                        rs.getString(&quot;password&quot;),</span>
+<span class="nc" id="L41">                        rs.getString(&quot;role&quot;)</span>
+                );
+            }
+<span class="nc bnc" id="L44" title="All 4 branches missed.">        }</span>
+<span class="fc" id="L45">        return null;</span>
+    }
+
+    /*@
+      @ also
+      @ public normal_behavior
+      @ requires user != null;
+      @ requires user.getEmail() != null &amp;&amp; !user.getEmail().isEmpty();
+      @ ensures \result == true || \result == false;
+      @ signals (SQLException) true;
+      @*/
+    @Override
+    public boolean saveUser(UserBean user) throws SQLException {
+<span class="fc" id="L58">        String userQuery = &quot;INSERT INTO UtenteRegistrato (username, email, password, role) VALUES (?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L59">        String clienteQuery = &quot;INSERT INTO Cliente (utente_registrato_email) VALUES (?)&quot;;</span>
+
+<span class="fc" id="L61">        try (Connection conn = ds.getConnection()) {</span>
+<span class="fc" id="L62">            conn.setAutoCommit(false);</span>
+
+<span class="fc" id="L64">            try (PreparedStatement userStmt = conn.prepareStatement(userQuery);</span>
+<span class="fc" id="L65">                 PreparedStatement clienteStmt = conn.prepareStatement(clienteQuery)) {</span>
+
+<span class="fc" id="L67">                userStmt.setString(1, user.getUsername());</span>
+<span class="fc" id="L68">                userStmt.setString(2, user.getEmail());</span>
+<span class="fc" id="L69">                userStmt.setString(3, com.popx.servizio.SecurityService.hashPassword(user.getPassword()));</span>
+<span class="fc" id="L70">                userStmt.setString(4, &quot;User&quot;);</span>
+<span class="fc" id="L71">                userStmt.executeUpdate();</span>
+
+<span class="fc" id="L73">                clienteStmt.setString(1, user.getEmail());</span>
+<span class="fc" id="L74">                clienteStmt.executeUpdate();</span>
+
+<span class="fc" id="L76">                conn.commit();</span>
+<span class="fc" id="L77">                return true;</span>
+
+<span class="nc" id="L79">            } catch (SQLException e) {</span>
+<span class="nc" id="L80">                conn.rollback();</span>
+<span class="nc" id="L81">                throw e;</span>
+            }
+        }
+    }
+
+    /*@
+      @ public normal_behavior
+      @ ensures \result != null;
+      @ signals (SQLException) true;
+      @*/
+    public List&lt;UserBean&gt; getAllUsers() throws SQLException {
+<span class="nc" id="L92">        List&lt;UserBean&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L93">        String query = &quot;SELECT * FROM UtenteRegistrato&quot;;</span>
+<span class="nc" id="L94">        try (Connection conn = ds.getConnection();</span>
+<span class="nc" id="L95">             PreparedStatement stmt = conn.prepareStatement(query);</span>
+<span class="nc" id="L96">             ResultSet rs = stmt.executeQuery()) {</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L98">                users.add(new UserBean(</span>
+<span class="nc" id="L99">                        rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L100">                        rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L101">                        rs.getString(&quot;password&quot;),</span>
+<span class="nc" id="L102">                        rs.getString(&quot;role&quot;)</span>
+                ));
+            }
+        }
+<span class="nc" id="L106">        return users;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
