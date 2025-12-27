@@ -62,12 +62,23 @@
             <version>9.4.46.v20220331</version>
         </dependency>
 
-        <!-- TEST -->
+        <!-- JUnit 5 API: annotations and assertions used to write test cases -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.9.2</version>
+            <scope>test</scope>
         </dependency>
+
+        <!-- JUnit 5 Engine: required by Maven Surefire to discover and execute JUnit 5 tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
 
         <dependency>
             <groupId>org.mockito</groupId>
@@ -112,6 +123,43 @@
                     <release>21</release>
                 </configuration>
             </plugin>
+
+            <!-- JaCoCo: code coverage analysis -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+
+                <executions>
+
+                    <!-- Attach JaCoCo agent before running tests -->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Generate coverage report after tests -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Include only project-owned packages -->
+                            <includes>
+                                <include>com/popx/**</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+
+
 
         </plugins>
     </build>
