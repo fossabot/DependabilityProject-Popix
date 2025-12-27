@@ -4,23 +4,22 @@ import com.popx.modello.UserBean;
 import com.popx.persistenza.UserDAO;
 import com.popx.persistenza.UserDAOImpl;
 
-import javax.sql.DataSource;
-
 /*@ public invariant userDAO != null; @*/
 public class AuthenticationService {
 
-    private DataSource DataSourceSingleton;
-    private UserDAO userDAO = new UserDAOImpl();
+    private UserDAO userDAO;
 
     /*@ ensures this.userDAO != null; @*/
-    public AuthenticationService(){
+    public AuthenticationService() {
+        // Production / integration behavior (UNCHANGED)
+        this.userDAO = new UserDAOImpl();
     }
 
     /*@
       @ requires userDAO != null;
       @ ensures this.userDAO == userDAO;
       @*/
-    public AuthenticationService(UserDAO userDAO){
+    public AuthenticationService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 

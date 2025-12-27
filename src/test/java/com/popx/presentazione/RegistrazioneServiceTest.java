@@ -70,4 +70,36 @@ class RegistrazioneServiceTest {
         // Verifica che i metodi DAO siano stati chiamati correttamente
         //verify(userDAOMock, times(1)).getUserByEmail("test@example.com");
     }
+    @Test
+    void testRegistrationUserAlreadyExists() throws Exception {
+        // Simula che l'email sia GIÀ registrata
+        ResultSet mockResultSet = Mockito.mock(ResultSet.class);
+
+        when(mockResultSet.next()).thenReturn(true); // utente trovato
+        when(mockResultSet.getString("email")).thenReturn("test@example.com");
+
+        PreparedStatement mockPreparedStatement = Mockito.mock(PreparedStatement.class);
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+
+        Connection mockConnection = Mockito.mock(Connection.class);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+
+        when(mockDataSource.getConnection()).thenReturn(mockConnection);
+
+        // Utente con email già presente
+        UserBean user = new UserBean(
+                "Mario",
+                "test@example.com",
+                "ValidPassword123!",
+                "User"
+        );
+
+        // Act + Assert: deve lanciare eccezione
+        Exception exception = assertThrows(Exception.class, () ->
+                registrazioneService.registerUser(user)
+        );
+
+        assertEquals("User already exists", exception.getMessage());
+    }
+
 }
