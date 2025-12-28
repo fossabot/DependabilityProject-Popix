@@ -18,7 +18,7 @@ public class CarrelloDAOImpl implements CarrelloDAO {
         this.ds = DataSourceSingleton.getInstance();
     }
 
-    @Override
+
     /*@ public normal_behavior
       @   requires carrello != null
       @        && carrello.getClienteEmail() != null && !carrello.getClienteEmail().isEmpty()
@@ -32,29 +32,55 @@ public class CarrelloDAOImpl implements CarrelloDAO {
       @   assignable \everything;
       @   ensures available;
       @*/
+    @Override
     public void salvaCarrello(CarrelloBean carrello) {
-        String queryCarrello = "INSERT INTO Carrello (cliente_email) VALUES (?)";
-        String queryProdottoCarrello = "INSERT INTO ProdottoCarrello (carrello_id, prodotto_id, quantity, unitary_cost) VALUES (?, ?, ?, ?)";
+        String upsertCart =
+                "INSERT INTO Carrello (cliente_email) VALUES (?) " +
+                        "ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)";
+
+        String insertProdottoCarrello =
+                "INSERT INTO ProdottoCarrello (carrello_id, prodotto_id, quantity, unitary_cost) " +
+                        "VALUES (?, ?, ?, ?) " +
+                        "ON DUPLICATE KEY UPDATE quantity = VALUES(quantity), unitary_cost = VALUES(unitary_cost)";
 
         try (Connection connection = ds.getConnection()) {
-            try (PreparedStatement psCarrello = connection.prepareStatement(queryCarrello)) {
-                psCarrello.setString(1, carrello.getClienteEmail());
-                psCarrello.executeUpdate();
+            connection.setAutoCommit(false);
 
-                for (ProdottoCarrelloBean prodotto : carrello.getProdottiCarrello()) {
-                    try (PreparedStatement psProdottoCarrello = connection.prepareStatement(queryProdottoCarrello)) {
-                        psProdottoCarrello.setString(1, carrello.getClienteEmail());
-                        psProdottoCarrello.setString(2, prodotto.getProdottoId());
-                        psProdottoCarrello.setInt(3, prodotto.getQuantity());
-                        psProdottoCarrello.setFloat(4, prodotto.getUnitaryCost());
-                        psProdottoCarrello.executeUpdate();
+            int carrelloId;
+
+            // 1) Inserisci (o recupera) il carrello e ottieni l'id
+            try (PreparedStatement psCart = connection.prepareStatement(upsertCart, Statement.RETURN_GENERATED_KEYS)) {
+                psCart.setString(1, carrello.getClienteEmail());
+                psCart.executeUpdate();
+
+                try (ResultSet keys = psCart.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        carrelloId = keys.getInt(1);
+                    } else {
+                        throw new SQLException("Impossibile ottenere l'ID del carrello.");
                     }
                 }
             }
+
+            // 2) Inserisci/aggiorna prodotti del carrello (batch)
+            try (PreparedStatement psProd = connection.prepareStatement(insertProdottoCarrello)) {
+                for (ProdottoCarrelloBean prodotto : carrello.getProdottiCarrello()) {
+                    psProd.setInt(1, carrelloId);
+                    psProd.setString(2, prodotto.getProdottoId());
+                    psProd.setInt(3, prodotto.getQuantity());
+                    psProd.setFloat(4, prodotto.getUnitaryCost());
+                    psProd.addBatch();
+                }
+                psProd.executeBatch();
+            }
+
+            connection.commit();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     /*@ public normal_behavior
