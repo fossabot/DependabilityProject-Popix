@@ -15,7 +15,7 @@ public class OrdineBean {
     private int id;
     private float subtotal;
     private String customerEmail;
-<span class="pc" id="L18">    private String status = &quot;In elaborazione&quot;;</span>
+<span class="fc" id="L18">    private String status = &quot;In elaborazione&quot;;</span>
     private Date dataOrdine;
 
     /*@
@@ -25,7 +25,7 @@ public class OrdineBean {
       @ ensures this.status.equals(&quot;In elaborazione&quot;);
       @ ensures this.dataOrdine == null;
       @*/
-<span class="nc" id="L28">    public OrdineBean() {}</span>
+<span class="fc" id="L28">    public OrdineBean() {}</span>
 
     /*@
       @ requires subtotal &gt;= 0;
@@ -52,23 +52,23 @@ public class OrdineBean {
 <span class="fc" id="L52">    public void setId(int id) { this.id = id; }</span>
 
     /*@ ensures \result == subtotal; @*/
-<span class="nc" id="L55">    public float getSubtotal() { return subtotal; }</span>
+<span class="fc" id="L55">    public float getSubtotal() { return subtotal; }</span>
 
     /*@ requires subtotal &gt;= 0;
       @ ensures this.subtotal == subtotal;
       @*/
-<span class="nc" id="L60">    public void setSubtotal(float subtotal) { this.subtotal = subtotal; }</span>
+<span class="fc" id="L60">    public void setSubtotal(float subtotal) { this.subtotal = subtotal; }</span>
 
     /*@ ensures \result == customerEmail; @*/
-<span class="nc" id="L63">    public String getCustomerEmail() { return customerEmail; }</span>
+<span class="fc" id="L63">    public String getCustomerEmail() { return customerEmail; }</span>
 
     /*@
       @ requires customerEmail != null &amp;&amp; !customerEmail.isEmpty();
       @ ensures this.customerEmail == customerEmail;
       @*/
     public void setCustomerEmail(String customerEmail) {
-<span class="nc" id="L70">        this.customerEmail = customerEmail;</span>
-<span class="nc" id="L71">    }</span>
+<span class="fc" id="L70">        this.customerEmail = customerEmail;</span>
+<span class="fc" id="L71">    }</span>
 
     /*@ ensures \result == status; @*/
 <span class="fc" id="L74">    public String getStatus() { return status; }</span>
@@ -80,14 +80,14 @@ public class OrdineBean {
 <span class="fc" id="L80">    public void setStatus(String status) { this.status = status; }</span>
 
     /*@ ensures \result == dataOrdine; @*/
-<span class="nc" id="L83">    public Date getDataOrdine() { return dataOrdine; }</span>
+<span class="fc" id="L83">    public Date getDataOrdine() { return dataOrdine; }</span>
 
     /*@
       @ // dataOrdine può essere null
       @ ensures this.dataOrdine == dataOrdine;
       @*/
     public void setDataOrdine(Date dataOrdine) {
-<span class="nc" id="L90">        this.dataOrdine = dataOrdine;</span>
-<span class="nc" id="L91">    }</span>
+<span class="fc" id="L90">        this.dataOrdine = dataOrdine;</span>
+<span class="fc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

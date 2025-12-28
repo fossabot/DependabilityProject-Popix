@@ -12,7 +12,7 @@ public class ClienteBean extends UserBean {
       @      &amp;&amp; this.getPassword() == null
       @      &amp;&amp; this.getRole() == null;
     @*/
-<span class="nc" id="L15">    public ClienteBean() {}</span>
+<span class="fc" id="L15">    public ClienteBean() {}</span>
 
 
     /*@
@@ -45,7 +45,7 @@ public class ClienteBean extends UserBean {
       @      &amp;&amp; this.getRole().equals(&quot;User&quot;);
     @*/
     public ClienteBean(String username, String email, String password, String role) {
-<span class="nc" id="L48">        super(username, email, password, role); // JML richiede che role sia &quot;User&quot;</span>
-<span class="nc" id="L49">    }</span>
+<span class="fc" id="L48">        super(username, email, password, role); // JML richiede che role sia &quot;User&quot;</span>
+<span class="fc" id="L49">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

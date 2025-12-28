@@ -22,7 +22,7 @@ public class RigaOrdineBean implements Serializable {
       @ ensures this.quantity == 0;
       @ ensures this.unitaryCost == 0.0f;
     @*/
-<span class="nc" id="L25">    public RigaOrdineBean() {}</span>
+<span class="fc" id="L25">    public RigaOrdineBean() {}</span>
 
     /*@
       @ requires ordineId &gt;= 0;
@@ -34,16 +34,16 @@ public class RigaOrdineBean implements Serializable {
       @ ensures this.quantity == quantity;
       @ ensures this.unitaryCost == unitaryCost;
     @*/
-<span class="nc" id="L37">    public RigaOrdineBean(int ordineId, String prodottoId, int quantity, float unitaryCost) {</span>
-<span class="nc" id="L38">        this.ordineId = ordineId;</span>
-<span class="nc" id="L39">        this.prodottoId = prodottoId;</span>
-<span class="nc" id="L40">        this.quantity = quantity;</span>
-<span class="nc" id="L41">        this.unitaryCost = unitaryCost;</span>
-<span class="nc" id="L42">    }</span>
+<span class="fc" id="L37">    public RigaOrdineBean(int ordineId, String prodottoId, int quantity, float unitaryCost) {</span>
+<span class="fc" id="L38">        this.ordineId = ordineId;</span>
+<span class="fc" id="L39">        this.prodottoId = prodottoId;</span>
+<span class="fc" id="L40">        this.quantity = quantity;</span>
+<span class="fc" id="L41">        this.unitaryCost = unitaryCost;</span>
+<span class="fc" id="L42">    }</span>
 
     /*@ ensures \result == ordineId; @*/
     public int getOrdineId() {
-<span class="nc" id="L46">        return ordineId;</span>
+<span class="fc" id="L46">        return ordineId;</span>
     }
 
     /*@
@@ -51,12 +51,12 @@ public class RigaOrdineBean implements Serializable {
       @ ensures this.ordineId == ordineId;
     @*/
     public void setOrdineId(int ordineId) {
-<span class="nc" id="L54">        this.ordineId = ordineId;</span>
-<span class="nc" id="L55">    }</span>
+<span class="fc" id="L54">        this.ordineId = ordineId;</span>
+<span class="fc" id="L55">    }</span>
 
     /*@ ensures \result == prodottoId; @*/
     public String getProdottoId() {
-<span class="nc" id="L59">        return prodottoId;</span>
+<span class="fc" id="L59">        return prodottoId;</span>
     }
 
     /*@
@@ -64,12 +64,12 @@ public class RigaOrdineBean implements Serializable {
       @ ensures this.prodottoId == prodottoId;
     @*/
     public void setProdottoId(String prodottoId) {
-<span class="nc" id="L67">        this.prodottoId = prodottoId;</span>
-<span class="nc" id="L68">    }</span>
+<span class="fc" id="L67">        this.prodottoId = prodottoId;</span>
+<span class="fc" id="L68">    }</span>
 
     /*@ ensures \result == quantity; @*/
     public int getQuantity() {
-<span class="nc" id="L72">        return quantity;</span>
+<span class="fc" id="L72">        return quantity;</span>
     }
 
     /*@
@@ -77,12 +77,12 @@ public class RigaOrdineBean implements Serializable {
       @ ensures this.quantity == quantity;
     @*/
     public void setQuantity(int quantity) {
-<span class="nc" id="L80">        this.quantity = quantity;</span>
-<span class="nc" id="L81">    }</span>
+<span class="fc" id="L80">        this.quantity = quantity;</span>
+<span class="fc" id="L81">    }</span>
 
     /*@ ensures \result == unitaryCost; @*/
     public float getUnitaryCost() {
-<span class="nc" id="L85">        return unitaryCost;</span>
+<span class="fc" id="L85">        return unitaryCost;</span>
     }
 
     /*@
@@ -90,7 +90,7 @@ public class RigaOrdineBean implements Serializable {
       @ ensures this.unitaryCost == unitaryCost;
     @*/
     public void setUnitaryCost(float unitaryCost) {
-<span class="nc" id="L93">        this.unitaryCost = unitaryCost;</span>
-<span class="nc" id="L94">    }</span>
+<span class="fc" id="L93">        this.unitaryCost = unitaryCost;</span>
+<span class="fc" id="L94">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

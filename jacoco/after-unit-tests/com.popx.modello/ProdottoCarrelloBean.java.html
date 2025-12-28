@@ -19,7 +19,7 @@ public class ProdottoCarrelloBean {
       @ ensures this.quantity == 0;
       @ ensures this.unitaryCost == 0.0f;
     @*/
-<span class="nc" id="L22">    public ProdottoCarrelloBean() {}</span>
+<span class="fc" id="L22">    public ProdottoCarrelloBean() {}</span>
 
     /*@
       @ requires clienteEmail != null &amp;&amp; !clienteEmail.isEmpty();
@@ -31,16 +31,16 @@ public class ProdottoCarrelloBean {
       @ ensures this.quantity == quantity;
       @ ensures this.unitaryCost == unitaryCost;
     @*/
-<span class="nc" id="L34">    public ProdottoCarrelloBean(String clienteEmail, String prodottoId, int quantity, float unitaryCost) {</span>
-<span class="nc" id="L35">        this.clienteEmail = clienteEmail;</span>
-<span class="nc" id="L36">        this.prodottoId = prodottoId;</span>
-<span class="nc" id="L37">        this.quantity = quantity;</span>
-<span class="nc" id="L38">        this.unitaryCost = unitaryCost;</span>
-<span class="nc" id="L39">    }</span>
+<span class="fc" id="L34">    public ProdottoCarrelloBean(String clienteEmail, String prodottoId, int quantity, float unitaryCost) {</span>
+<span class="fc" id="L35">        this.clienteEmail = clienteEmail;</span>
+<span class="fc" id="L36">        this.prodottoId = prodottoId;</span>
+<span class="fc" id="L37">        this.quantity = quantity;</span>
+<span class="fc" id="L38">        this.unitaryCost = unitaryCost;</span>
+<span class="fc" id="L39">    }</span>
 
     /*@ ensures \result == clienteEmail; @*/
     public String getClienteEmail() {
-<span class="nc" id="L43">        return clienteEmail;</span>
+<span class="fc" id="L43">        return clienteEmail;</span>
     }
 
     /*@
@@ -48,12 +48,12 @@ public class ProdottoCarrelloBean {
       @ ensures this.clienteEmail == clienteEmail;
     @*/
     public void setClienteEmail(String clienteEmail) {
-<span class="nc" id="L51">        this.clienteEmail = clienteEmail;</span>
-<span class="nc" id="L52">    }</span>
+<span class="fc" id="L51">        this.clienteEmail = clienteEmail;</span>
+<span class="fc" id="L52">    }</span>
 
     /*@ ensures \result == prodottoId; @*/
     public String getProdottoId() {
-<span class="nc" id="L56">        return prodottoId;</span>
+<span class="fc" id="L56">        return prodottoId;</span>
     }
 
     /*@
@@ -61,12 +61,12 @@ public class ProdottoCarrelloBean {
       @ ensures this.prodottoId == prodottoId;
     @*/
     public void setProdottoId(String prodottoId) {
-<span class="nc" id="L64">        this.prodottoId = prodottoId;</span>
-<span class="nc" id="L65">    }</span>
+<span class="fc" id="L64">        this.prodottoId = prodottoId;</span>
+<span class="fc" id="L65">    }</span>
 
     /*@ ensures \result == quantity; @*/
     public int getQuantity() {
-<span class="nc" id="L69">        return quantity;</span>
+<span class="fc" id="L69">        return quantity;</span>
     }
 
     /*@
@@ -74,12 +74,12 @@ public class ProdottoCarrelloBean {
       @ ensures this.quantity == quantity;
     @*/
     public void setQuantity(int quantity) {
-<span class="nc" id="L77">        this.quantity = quantity;</span>
-<span class="nc" id="L78">    }</span>
+<span class="fc" id="L77">        this.quantity = quantity;</span>
+<span class="fc" id="L78">    }</span>
 
     /*@ ensures \result == unitaryCost; @*/
     public float getUnitaryCost() {
-<span class="nc" id="L82">        return unitaryCost;</span>
+<span class="fc" id="L82">        return unitaryCost;</span>
     }
 
     /*@
@@ -87,7 +87,7 @@ public class ProdottoCarrelloBean {
       @ ensures this.unitaryCost == unitaryCost;
     @*/
     public void setUnitaryCost(float unitaryCost) {
-<span class="nc" id="L90">        this.unitaryCost = unitaryCost;</span>
-<span class="nc" id="L91">    }</span>
+<span class="fc" id="L90">        this.unitaryCost = unitaryCost;</span>
+<span class="fc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
