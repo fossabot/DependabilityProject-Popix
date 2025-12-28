@@ -46,7 +46,7 @@ public class AdminBean extends UserBean {
       @      && this.getRole().equals("Admin");
     @*/
     public AdminBean(String username, String email, String password, String role) {
-        super(username, password, email, role);
+        super(username, email, password, role);
     }
 
 }
