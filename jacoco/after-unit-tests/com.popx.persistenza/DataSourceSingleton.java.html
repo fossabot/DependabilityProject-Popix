@@ -11,7 +11,7 @@ public class DataSourceSingleton {
     private DataSourceSingleton() {}
 
     public static DataSource getInstance() {
-<span class="pc bpc" id="L14" title="1 of 2 branches missed.">        if (instance == null) {</span>
+<span class="nc bnc" id="L14" title="All 2 branches missed.">        if (instance == null) {</span>
 <span class="nc" id="L15">            synchronized (DataSourceSingleton.class) {</span>
 <span class="nc bnc" id="L16" title="All 2 branches missed.">                if (instance == null) {</span>
                     try {
@@ -24,12 +24,12 @@ public class DataSourceSingleton {
                 }
 <span class="nc" id="L25">            }</span>
         }
-<span class="fc" id="L27">        return instance;</span>
+<span class="nc" id="L27">        return instance;</span>
     }
 
     // Metodo aggiuntivo per impostare un DataSource mock
     public static void setInstanceForTest(DataSource mockDataSource) {
-<span class="fc" id="L32">        instance = mockDataSource;</span>
-<span class="fc" id="L33">    }</span>
+<span class="nc" id="L32">        instance = mockDataSource;</span>
+<span class="nc" id="L33">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
