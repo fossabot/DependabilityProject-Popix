@@ -14,52 +14,48 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthenticationServiceTest {
 
     private AuthenticationService authService;
+    private JdbcDataSource dataSource;
 
     @BeforeEach
     void setupDatabase() throws Exception {
 
-        JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
-        ds.setUser("sa");
-        ds.setPassword("");
+        // 🔹 H2 in-memory database
+        dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+        dataSource.setUser("sa");
+        dataSource.setPassword("");
 
-        DataSourceSingleton.setInstanceForTest(ds);
+        // 🔹 Override del DataSource singleton
+        DataSourceSingleton.setInstanceForTest(dataSource);
 
-        try (Connection conn = ds.getConnection();
-             Statement stmt = conn.createStatement()) {
-
-            stmt.execute("""
-            CREATE TABLE UtenteRegistrato (
-                username VARCHAR(50),
-                email VARCHAR(100) PRIMARY KEY,
-                password VARCHAR(255),
-                role VARCHAR(20)
-            )
-        """);
-
-            stmt.execute("""
-            CREATE TABLE Cliente (
-                utente_registrato_email VARCHAR(100) PRIMARY KEY,
-                FOREIGN KEY (utente_registrato_email)
-                    REFERENCES UtenteRegistrato(email)
-            )
-        """);
-        }
-
+        // 🔹 Init service
         authService = new AuthenticationService();
-    }
 
-
-    @AfterEach
-    void cleanup() throws Exception {
-        try (Connection conn = DataSourceSingleton.getInstance().getConnection();
+        try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute("DROP TABLE Cliente");
-            stmt.execute("DROP TABLE UtenteRegistrato");
+            // 🔥 IDPOTENTE
+            stmt.execute("DROP TABLE IF EXISTS Cliente");
+            stmt.execute("DROP TABLE IF EXISTS UtenteRegistrato");
+
+            stmt.execute("""
+                CREATE TABLE UtenteRegistrato (
+                    username VARCHAR(50),
+                    email VARCHAR(100) PRIMARY KEY,
+                    password VARCHAR(255),
+                    role VARCHAR(20)
+                )
+            """);
+
+            stmt.execute("""
+                CREATE TABLE Cliente (
+                    utente_registrato_email VARCHAR(100) PRIMARY KEY,
+                    FOREIGN KEY (utente_registrato_email)
+                    REFERENCES UtenteRegistrato(email)
+                )
+            """);
         }
     }
-
 
     // ---------- REGISTER + LOGIN FLOW ----------
 
