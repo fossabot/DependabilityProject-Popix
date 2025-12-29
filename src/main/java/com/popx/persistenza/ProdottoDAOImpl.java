@@ -400,21 +400,28 @@ public class ProdottoDAOImpl implements ProdottoDAO {
       @   assignable \everything;
       @   ensures available;
       @*/
+    @Override
     public void updateCartProductQuantityInDatabase(String userEmail, String productId, int qty) throws SQLException {
-        String query = "UPDATE ProdottoCarrello pc " +
-                "JOIN Carrello c ON pc.carrello_id = c.id " +
-                "SET pc.quantity = ? " +
-                "WHERE c.cliente_email = ? AND pc.prodotto_id = ?";
+        String query = """
+        UPDATE ProdottoCarrello
+        SET quantity = ?
+        WHERE prodotto_id = ?
+          AND carrello_id = (
+              SELECT id FROM Carrello WHERE cliente_email = ?
+          )
+        """;
 
         try (Connection connection = ds.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
+
             stmt.setInt(1, qty);
-            stmt.setString(2, userEmail);
-            stmt.setString(3, productId);
+            stmt.setString(2, productId);
+            stmt.setString(3, userEmail);
 
             stmt.executeUpdate();
         }
     }
+
 
     /*@ public normal_behavior
       @   requires userEmail != null && !userEmail.isEmpty()
@@ -422,19 +429,26 @@ public class ProdottoDAOImpl implements ProdottoDAO {
       @   assignable \everything;
       @   ensures available;
       @*/
+    @Override
     public void removeProductFromCart(String userEmail, String productId) throws SQLException {
-        String query = "DELETE pc FROM ProdottoCarrello pc " +
-                "JOIN Carrello c ON pc.carrello_id = c.id " +
-                "WHERE c.cliente_email = ? AND pc.prodotto_id = ?";
+        String query = """
+        DELETE FROM ProdottoCarrello
+        WHERE prodotto_id = ?
+          AND carrello_id = (
+              SELECT id FROM Carrello WHERE cliente_email = ?
+          )
+        """;
 
         try (Connection connection = ds.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, userEmail);
-            stmt.setString(2, productId);
+
+            stmt.setString(1, productId);
+            stmt.setString(2, userEmail);
 
             stmt.executeUpdate();
         }
     }
+
 
     @Override
     /*@ public normal_behavior
@@ -473,14 +487,15 @@ public class ProdottoDAOImpl implements ProdottoDAO {
       @   ensures \result ==> true;
       @*/
     public boolean updateProduct(ProdottoBean prodottoBean) {
-        String queryProdotto = "UPDATE Prodotto SET name = ?, cost = ?, brand = ?, figure = ?, pieces_in_stock = ?, img = ?, description = ? WHERE id = ?";
-        String queryProdottoCarrello = "UPDATE ProdottoCarrello SET unitary_cost = ? WHERE prodotto_id = ?";
+        String queryProdotto =
+                "UPDATE Prodotto SET name = ?, cost = ?, brand = ?, figure = ?, pieces_in_stock = ?, img = ?, description = ? WHERE id = ?";
+        String queryProdottoCarrello =
+                "UPDATE ProdottoCarrello SET unitary_cost = ? WHERE prodotto_id = ?";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement stmtProdotto = conn.prepareStatement(queryProdotto);
              PreparedStatement stmtProdottoCarrello = conn.prepareStatement(queryProdottoCarrello)) {
 
-            // Aggiorna la tabella 'prodotto'
             stmtProdotto.setString(1, prodottoBean.getName());
             stmtProdotto.setDouble(2, prodottoBean.getCost());
             stmtProdotto.setString(3, prodottoBean.getBrand());
@@ -492,19 +507,19 @@ public class ProdottoDAOImpl implements ProdottoDAO {
 
             int rowsUpdatedProdotto = stmtProdotto.executeUpdate();
 
-            // Aggiorna la tabella 'prodotto_carrello'
-            stmtProdottoCarrello.setDouble(1, prodottoBean.getCost()); // Cost da aggiornare in ProdottoCarrello
+            // opzionale: aggiorna carrello se esiste
+            stmtProdottoCarrello.setDouble(1, prodottoBean.getCost());
             stmtProdottoCarrello.setString(2, prodottoBean.getId());
+            stmtProdottoCarrello.executeUpdate();
 
-            int rowsUpdatedProdottoCarrello = stmtProdottoCarrello.executeUpdate();
-
-            return rowsUpdatedProdotto > 0 && rowsUpdatedProdottoCarrello > 0;
+            return rowsUpdatedProdotto > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+
 
     /*@ public normal_behavior
       @   requires productId != null && !productId.isEmpty()
