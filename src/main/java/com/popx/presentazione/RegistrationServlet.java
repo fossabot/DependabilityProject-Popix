@@ -13,10 +13,22 @@ import java.io.IOException;
 @WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {
 
-    private final AuthenticationService authService = new AuthenticationService();
+    private final AuthenticationService authService;
+
+    // Costruttore usato in produzione
+    public RegistrationServlet() {
+        this.authService = new AuthenticationService();
+    }
+
+    // Costruttore usato nei test (dependency injection)
+    public RegistrationServlet(AuthenticationService authService) {
+        this.authService = authService;
+    }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -25,30 +37,36 @@ public class RegistrationServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            // Controlla se l'email esiste già
             if (authService.isEmailRegistered(email)) {
-                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email già registrata.\"}");
+                response.getWriter().write(
+                        "{\"status\":\"error\",\"message\":\"Email già registrata.\"}"
+                );
                 return;
             }
 
-            // Crea un nuovo oggetto UserBean
             UserBean user = new UserBean();
             user.setUsername(username);
             user.setEmail(email);
             user.setPassword(password);
-            user.setRole("User"); // Ruolo predefinito
+            user.setRole("User");
 
-            // Registra l'utente
-            boolean isRegistered = authService.registerUser(user);
+            boolean registered = authService.registerUser(user);
 
-            if (isRegistered) {
-                response.getWriter().write("{\"status\":\"success\",\"message\":\"Registrazione avvenuta con successo.\",\"redirect\":\"" + request.getContextPath() + "/jsp/HomePage.jsp\"}");
+            if (registered) {
+                response.getWriter().write(
+                        "{\"status\":\"success\",\"message\":\"Registrazione avvenuta con successo.\","
+                                + "\"redirect\":\"" + request.getContextPath() + "/jsp/HomePage.jsp\"}"
+                );
             } else {
-                response.getWriter().write("{\"status\":\"error\",\"message\":\"Errore sconosciuto durante la registrazione.\"}");
+                response.getWriter().write(
+                        "{\"status\":\"error\",\"message\":\"Errore sconosciuto durante la registrazione.\"}"
+                );
             }
+
         } catch (Exception e) {
-            response.getWriter().write("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
+            response.getWriter().write(
+                    "{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}"
+            );
         }
     }
 }
-

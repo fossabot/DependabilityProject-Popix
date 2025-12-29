@@ -16,25 +16,31 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @WebServlet("/addProductServlet")
-@MultipartConfig(maxFileSize = 2 * 1024 * 1024) // Max file size 2MB
+@MultipartConfig(maxFileSize = 2 * 1024 * 1024)
 public class ProductServlet extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
-    private ProdottoDAOImpl prodottoDAO = new ProdottoDAOImpl();
+    private ProdottoDAOImpl prodottoDAO;
 
+    // 👉 costruttore production (Tomcat)
     public ProductServlet() {
-        this.prodottoDAO = new ProdottoDAOImpl(DataSourceSingleton.getInstance()); // Usa il DataSource dal singleton
+        this.prodottoDAO = new ProdottoDAOImpl(DataSourceSingleton.getInstance());
     }
 
+    // 👉 costruttore test
+    public ProductServlet(ProdottoDAOImpl prodottoDAO) {
+        this.prodottoDAO = prodottoDAO;
+    }
 
-        @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
         response.setContentType("application/json");
         JsonObject jsonResponse = new JsonObject();
 
         try {
-            // Retrieve and validate form data
             String id = request.getParameter("idProduct");
             String name = request.getParameter("name");
             String description = request.getParameter("description");
@@ -44,11 +50,11 @@ public class ProductServlet extends HttpServlet {
             String figure = request.getParameter("figure");
             Part imgPart = request.getPart("img_src");
 
-            // Validate required fields
             if (id == null || id.isEmpty() ||
                     name == null || name.isEmpty() ||
                     costStr == null || costStr.isEmpty() ||
                     piecesInStockStr == null || piecesInStockStr.isEmpty()) {
+
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Campi obbligatori mancanti.");
                 response.getWriter().write(jsonResponse.toString());
@@ -70,21 +76,21 @@ public class ProductServlet extends HttpServlet {
                 return;
             }
 
-            // Create and save product
-            ProdottoBean prodotto = new ProdottoBean(id, name, description, cost, piecesInStock, brand, imgBytes, figure);
+            ProdottoBean prodotto = new ProdottoBean(
+                    id, name, description, cost, piecesInStock, brand, imgBytes, figure
+            );
+
             boolean isSaved = prodottoDAO.saveProdotto(prodotto);
 
-            if (isSaved) {
-                jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("message", "Prodotto aggiunto con successo.");
-            } else {
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Errore durante il salvataggio del prodotto.");
-            }
+            jsonResponse.addProperty("success", isSaved);
+            jsonResponse.addProperty(
+                    "message",
+                    isSaved ? "Prodotto aggiunto con successo." : "Errore durante il salvataggio del prodotto."
+            );
+
         } catch (Exception e) {
-            e.printStackTrace();
             jsonResponse.addProperty("success", false);
-            jsonResponse.addProperty("message", "Errore interno: " + e.getMessage());
+            jsonResponse.addProperty("message", "Errore interno.");
         }
 
         response.getWriter().write(jsonResponse.toString());

@@ -14,10 +14,22 @@ import java.io.OutputStream;
 @WebServlet(name = "GetPictureServlet", urlPatterns = {"/getPictureServlet"})
 public class GetPictureServlet extends HttpServlet {
 
-    private final ProdottoDAO prodottoDAO = new ProdottoDAOImpl();
+    private ProdottoDAO prodottoDAO;
+
+    // 🔹 costruttore production
+    public GetPictureServlet() {
+        this.prodottoDAO = new ProdottoDAOImpl();
+    }
+
+    // 🔹 costruttore test
+    public GetPictureServlet(ProdottoDAO prodottoDAO) {
+        this.prodottoDAO = prodottoDAO;
+    }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         String id = request.getParameter("id");
 
         if (id == null || id.isEmpty()) {
@@ -30,15 +42,16 @@ public class GetPictureServlet extends HttpServlet {
 
             if (imageData != null) {
                 response.setContentType("image/jpeg");
-                try (OutputStream out = response.getOutputStream()) {
-                    out.write(imageData);
-                }
+                response.getOutputStream().write(imageData);
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Immagine non trovata.");
             }
+
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante il recupero dell'immagine.");
+            response.sendError(
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Errore durante il recupero dell'immagine."
+            );
         }
     }
 }

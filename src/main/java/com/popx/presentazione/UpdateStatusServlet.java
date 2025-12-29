@@ -3,35 +3,64 @@ package com.popx.presentazione;
 import com.popx.modello.OrdineBean;
 import com.popx.persistenza.OrdineDAO;
 import com.popx.persistenza.OrdineDAOImpl;
-import org.mockito.internal.matchers.Or;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/UpdateOrderStatus")
 public class UpdateStatusServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("id"));
+    private final OrdineDAO ordineDAO;
+
+    // 👉 production
+    public UpdateStatusServlet() {
+        this.ordineDAO = new OrdineDAOImpl();
+    }
+
+    // 👉 test
+    public UpdateStatusServlet(OrdineDAO ordineDAO) {
+        this.ordineDAO = ordineDAO;
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("application/json");
+
+        String idParam = request.getParameter("id");
         String newStatus = request.getParameter("status");
 
+        if (idParam == null || newStatus == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"success\": false}");
+            return;
+        }
 
-
-        OrdineDAO ordineDAO = new OrdineDAOImpl();
-
-        OrdineBean ordineBean = ordineDAO.getOrdineById(orderId);
-
-        ordineBean.setStatus(newStatus);
+        int orderId;
+        try {
+            orderId = Integer.parseInt(idParam);
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"success\": false}");
+            return;
+        }
 
         try {
-            boolean success = ordineDAO.updateStatus(ordineBean);
-            response.setContentType("application/json");
+            OrdineBean ordine = ordineDAO.getOrdineById(orderId);
+            if (ordine == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("{\"success\": false}");
+                return;
+            }
+
+            ordine.setStatus(newStatus);
+            boolean success = ordineDAO.updateStatus(ordine);
+
             response.getWriter().write("{\"success\": " + success + "}");
+
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -39,4 +68,3 @@ public class UpdateStatusServlet extends HttpServlet {
         }
     }
 }
-

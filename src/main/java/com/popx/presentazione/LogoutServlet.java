@@ -17,9 +17,19 @@ import java.util.List;
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
-    private ProdottoDAO prodottoDAO = new ProdottoDAOImpl();
+    private ProdottoDAO prodottoDAO;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // produzione
+    public LogoutServlet() {
+        this.prodottoDAO = new ProdottoDAOImpl();
+    }
+
+    // test (dependency injection)
+    public LogoutServlet(ProdottoDAO prodottoDAO) {
+        this.prodottoDAO = prodottoDAO;
+    }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         List<ProdottoBean> cart = (List<ProdottoBean>) session.getAttribute("cart");
 

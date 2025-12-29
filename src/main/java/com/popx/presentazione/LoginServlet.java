@@ -22,12 +22,12 @@ public class LoginServlet extends HttpServlet {
     }
 
     // Costruttore usato nei test (dependency injection)
-    LoginServlet(AuthenticationService authService) {
+    public LoginServlet(AuthenticationService authService) {
         this.authService = authService;
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String email = request.getParameter("email");
