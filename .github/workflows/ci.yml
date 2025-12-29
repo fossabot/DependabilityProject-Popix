@@ -46,3 +46,13 @@ jobs:
           name: Maven Test Results
           path: target/surefire-reports/*.xml
           reporter: java-junit
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: success() || failure()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/site/jacoco/jacoco.xml
+          flags: unittests
+          name: popix-jacoco
+          fail_ci_if_error: false
