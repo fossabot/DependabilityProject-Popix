@@ -1,0 +1,25 @@
+# .github/dependabot.yml
+#
+# Dependabot policy (dependability-first):
+# - Weekly checks to reduce noise while keeping dependencies up to date
+# - Allow patch/minor updates automatically
+# - Ignore semver-major updates by default to avoid breaking changes
+# - Limit the number of open PRs to keep reviews manageable
+
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    ignore:
+      # Keep the project stable: major upgrades are handled manually
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
