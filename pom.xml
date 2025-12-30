@@ -105,6 +105,8 @@
 
 
 
+
+
     </dependencies>
 
     <build>
@@ -176,6 +178,50 @@
 
                 </executions>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.15.2</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>1.2.1</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <targetClasses>
+                        <param>com.popx.servizio.*</param>
+                    </targetClasses>
+
+                    <targetTests>
+                        <param>com.popx.unit.servizio.*</param>
+                    </targetTests>
+
+                    <mutators>
+                        <mutator>STRONGER</mutator>
+                    </mutators>
+
+                    <excludedClasses>
+                        <param>com.popx.modello.*</param>
+                        <param>com.popx.presentazione.*</param>
+                        <param>com.popx.persistenza.*</param>
+                    </excludedClasses>
+
+                    <excludedTestClasses>
+                        <param>com.popx.integration.*</param>
+                    </excludedTestClasses>
+
+                    <threads>4</threads>
+                    <failWhenNoMutations>false</failWhenNoMutations>
+                </configuration>
+            </plugin>
+
+
 
 
 
