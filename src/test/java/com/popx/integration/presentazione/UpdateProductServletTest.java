@@ -9,9 +9,12 @@ import org.junit.jupiter.api.Test;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class UpdateProductServletTest {
@@ -37,6 +40,7 @@ class UpdateProductServletTest {
         writer = new PrintWriter(responseBody);
         when(response.getWriter()).thenReturn(writer);
 
+        // Parametri base comuni
         when(request.getParameter("idProduct")).thenReturn("P001");
         when(request.getParameter("name")).thenReturn("Prodotto");
         when(request.getParameter("description")).thenReturn("Desc");
@@ -44,20 +48,25 @@ class UpdateProductServletTest {
         when(request.getParameter("qty")).thenReturn("5");
         when(request.getParameter("brand")).thenReturn("Brand");
         when(request.getParameter("figure")).thenReturn("Figure");
-        when(request.getParameter("current_img_src")).thenReturn("img.png");
+        when(request.getParameter("current_img_src")).thenReturn("existing.png");
     }
+
+    /* ===================== SUCCESS PATH ===================== */
 
     @Test
-    void updateProduct_success() throws Exception {
+    void updateProduct_success_withoutImage() throws Exception {
+        when(request.getPart("img_src")).thenReturn(null);
         when(prodottoDAO.getProdottoById("P001")).thenReturn(new ProdottoBean());
         when(prodottoDAO.updateProduct(any())).thenReturn(true);
-        when(request.getPart("img_src")).thenReturn(null);
 
         servlet.doPost(request, response);
+        writer.flush();
 
         verify(prodottoDAO).updateProduct(any());
-        assert responseBody.toString().contains("\"success\":true");
+        assertTrue(responseBody.toString().contains("\"success\":true"));
     }
+
+    /* ===================== INVALID IMAGE ===================== */
 
     @Test
     void invalidImage_returnsError() throws Exception {
@@ -67,10 +76,16 @@ class UpdateProductServletTest {
         when(request.getPart("img_src")).thenReturn(part);
 
         servlet.doPost(request, response);
+        writer.flush();
 
-        assert responseBody.toString().contains("non è un'immagine valida");
+        String json = responseBody.toString();
+        assertTrue(json.contains("\"success\":false"));
+        assertTrue(json.contains("non è un'immagine valida"));
+
         verify(prodottoDAO, never()).updateProduct(any());
     }
+
+    /* ===================== DAO EXCEPTION ===================== */
 
     @Test
     void daoThrowsException_returnsError() throws Exception {
@@ -79,7 +94,56 @@ class UpdateProductServletTest {
                 .thenThrow(new RuntimeException("DB error"));
 
         servlet.doPost(request, response);
+        writer.flush();
 
-        assert responseBody.toString().contains("\"success\":false");
+        assertTrue(responseBody.toString().contains("\"success\":false"));
+    }
+
+    /* ===================== EMPTY IMAGE FALLBACK ===================== */
+
+    @Test
+    void emptyImagePart_usesExistingImage() throws Exception {
+        Part emptyImg = mock(Part.class);
+        when(emptyImg.getSize()).thenReturn(0L);
+        when(request.getPart("img_src")).thenReturn(emptyImg);
+
+        ProdottoBean existing = new ProdottoBean();
+        existing.setImg(new byte[]{9, 9});
+
+        when(prodottoDAO.getProdottoById("P001")).thenReturn(existing);
+        when(prodottoDAO.updateProduct(any())).thenReturn(true);
+
+        servlet.doPost(request, response);
+        writer.flush();
+
+        verify(prodottoDAO).updateProduct(argThat(p ->
+                Arrays.equals(p.getImg(), new byte[]{9, 9})
+        ));
+    }
+
+    /* ===================== VALID IMAGE UPLOAD (MUTATION KILLER) ===================== */
+
+    @Test
+    void validImage_setsImgFromUpload_andUpdatesProduct() throws Exception {
+        byte[] uploadedBytes = {1, 2, 3, 4};
+
+        Part imgPart = mock(Part.class);
+        when(imgPart.getSize()).thenReturn((long) uploadedBytes.length);
+        when(imgPart.getContentType()).thenReturn("image/png");
+        when(imgPart.getInputStream())
+                .thenReturn(new ByteArrayInputStream(uploadedBytes));
+
+        when(request.getPart("img_src")).thenReturn(imgPart);
+        when(prodottoDAO.updateProduct(any())).thenReturn(true);
+
+        servlet.doPost(request, response);
+        writer.flush();
+
+        // 🔥 QUESTO UCCIDE IL MUTANTE setImg()
+        verify(prodottoDAO).updateProduct(argThat(p ->
+                p != null && Arrays.equals(p.getImg(), uploadedBytes)
+        ));
+
+        assertTrue(responseBody.toString().contains("\"success\":true"));
     }
 }

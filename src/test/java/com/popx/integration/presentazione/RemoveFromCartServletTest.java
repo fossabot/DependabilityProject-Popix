@@ -114,4 +114,27 @@ class RemoveFromCartServletTest {
         verify(response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         assertTrue(responseBody.toString().contains("Errore nella rimozione"));
     }
+
+    @Test
+    void removeFromCart_removesOnlyTargetProduct_notAll() throws Exception {
+        ProdottoBean p1 = new ProdottoBean();
+        p1.setId("P1");
+
+        ProdottoBean p2 = new ProdottoBean();
+        p2.setId("P2");
+
+        List<ProdottoBean> cart = new ArrayList<>();
+        cart.add(p1);
+        cart.add(p2);
+
+        when(request.getParameter("productId")).thenReturn("P1");
+        when(session.getAttribute("cart")).thenReturn(cart);
+        when(session.getAttribute("userEmail")).thenReturn(null);
+
+        servlet.doPost(request, response);
+
+        assertEquals(1, cart.size());
+        assertEquals("P2", cart.get(0).getId());
+    }
+
 }

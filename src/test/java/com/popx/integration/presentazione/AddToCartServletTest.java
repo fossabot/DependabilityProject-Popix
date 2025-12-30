@@ -155,4 +155,32 @@ class AddToCartServletTest {
 
         assertTrue(responseBody.toString().contains("Errore interno"));
     }
+
+    @Test
+    void addToCart_quantityExactlyEqualsStock_allowed() throws Exception {
+        ProdottoBean prodotto = new ProdottoBean();
+        prodotto.setId("P01");
+        prodotto.setPiecesInStock(5);
+
+        List<ProdottoBean> cart = new ArrayList<>();
+        cart.add(prodotto);
+
+        when(request.getParameter("productId")).thenReturn("P01");
+        when(request.getParameter("quantity")).thenReturn("2");
+        when(session.getAttribute("userEmail")).thenReturn(null);
+        when(session.getAttribute("cart")).thenReturn(cart);
+        when(prodottoDAO.getProdottoById("P01")).thenReturn(prodotto);
+
+        // currentQty + quantity == piecesInStock
+        when(prodottoDAO.getProductQtyInCart(session, "P01")).thenReturn(3);
+
+        servlet.doPost(request, response);
+
+        // Deve essere ACCETTATO
+        verify(prodottoDAO)
+                .updateProductQtyInCart(session, "P01", 5);
+
+        assertTrue(responseBody.toString().contains("\"success\": true"));
+    }
+
 }
