@@ -19,6 +19,10 @@ The application supports:
 
 ## Project Structure (Relevant Files)
 
+The project follows a standard Maven directory layout with additional configuration for Docker and CI/CD.  
+The relevant files and directories are as follows:
+
+```text
 .
 ├── pom.xml                     # Maven configuration
 ├── Dockerfile                  # Multi-stage Docker build (Maven + Tomcat)
@@ -34,12 +38,13 @@ The application supports:
 │   │   └── java/
 │   │       └── com/
 │   │           └── popx/
-│   │               ├── unit/   # Unit tests
+│   │               ├── unit/        # Unit tests
 │   │               └── integration/ # Integration tests (DAO, services, servlets)
 │   └── database/               # SQL initialization scripts
 ├── .github/
 │   └── workflows/              # CI/CD pipeline configuration
 └── target/                     # Build artifacts (generated)
+```
 ---
 
 ## Requirements
