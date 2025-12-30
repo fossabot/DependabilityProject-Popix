@@ -637,17 +637,17 @@
 <a name='org.pitest.mutationtest.report.html.SourceFile@5834298c_42'/>
 42
 </td>
-<td class='survived'>
+<td class='killed'>
 <span class='pop'>
 <a href='#grouporg.pitest.mutationtest.report.html.SourceFile@5834298c_42'>2</a>
 <span>
-1. lambda$doPost$0 : replaced boolean return with true for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; SURVIVED<br/>
-2. lambda$doPost$0 : replaced boolean return with false for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; KILLED<br/>
+1. lambda$doPost$0 : replaced boolean return with false for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; KILLED<br/>
+2. lambda$doPost$0 : replaced boolean return with true for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; KILLED<br/>
 
 </span>
 </span>
 </td>
-<td class='covered'><pre><span  class='survived'>                cart.removeIf(product -&#62; product.getId().equals(productId));</span></pre></td></tr>
+<td class='covered'><pre><span  class='killed'>                cart.removeIf(product -&#62; product.getId().equals(productId));</span></pre></td></tr>
 
 
 <tr>
@@ -1038,7 +1038,7 @@
 
 <a name='grouporg.pitest.mutationtest.report.html.SourceFile@5834298c_40'/> 
 
-<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>doPost<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_guestUser_removesOnlyFromSession()]</span></span> negated conditional &rarr; KILLED</p> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>doPost<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_invalidProductId_returnsError()]</span></span> negated conditional &rarr; KILLED</p> <p class='KILLED'><span class='pop'>3.<span><b>3</b><br/><b>Location : </b>doPost<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_guestUser_removesOnlyFromSession()]</span></span> negated conditional &rarr; KILLED</p> 
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>doPost<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_removesOnlyTargetProduct_notAll()]</span></span> negated conditional &rarr; KILLED</p> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>doPost<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_invalidProductId_returnsError()]</span></span> negated conditional &rarr; KILLED</p> <p class='KILLED'><span class='pop'>3.<span><b>3</b><br/><b>Location : </b>doPost<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_removesOnlyTargetProduct_notAll()]</span></span> negated conditional &rarr; KILLED</p> 
 </td>
 </tr>
 <tr>
@@ -1048,7 +1048,7 @@
 
 <a name='grouporg.pitest.mutationtest.report.html.SourceFile@5834298c_42'/> 
 
-<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>lambda$doPost$0<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_guestUser_removesOnlyFromSession()]</span></span> replaced boolean return with false for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; KILLED</p> <p class='SURVIVED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>lambda$doPost$0<br/><b>Killed by : </b>none</span></span> replaced boolean return with true for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; SURVIVED</p> 
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>lambda$doPost$0<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_removesOnlyTargetProduct_notAll()]</span></span> replaced boolean return with false for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; KILLED</p> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>lambda$doPost$0<br/><b>Killed by : </b>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_removesOnlyTargetProduct_notAll()]</span></span> replaced boolean return with true for com/popx/presentazione/RemoveFromCartServlet::lambda$doPost$0 &rarr; KILLED</p> 
 </td>
 </tr>
 <tr>
@@ -1163,7 +1163,7 @@
 
 <h2>Tests examined</h2>
 <ul>
-<li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_guestUser_removesOnlyFromSession()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_loggedUser_removesFromSessionAndDatabase()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_sqlException_returns500()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_invalidProductId_returnsError()] (0 ms)</li>
+<li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_removesOnlyTargetProduct_notAll()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_guestUser_removesOnlyFromSession()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_loggedUser_removesFromSessionAndDatabase()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_sqlException_returns500()] (0 ms)</li><li>com.popx.integration.presentazione.RemoveFromCartServletTest.[engine:junit-jupiter]/[class:com.popx.integration.presentazione.RemoveFromCartServletTest]/[method:removeFromCart_invalidProductId_returnsError()] (0 ms)</li>
 </ul>
 
 <br/>
