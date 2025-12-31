@@ -147,53 +147,43 @@ public class CarrelloDAOImpl implements CarrelloDAO {
       @   ensures available;
       @*/
     public void clearCartByUserEmail(String email) {
-        String queryProdottoCarrello = "DELETE FROM ProdottoCarrello WHERE carrello_id = (SELECT id FROM Carrello WHERE cliente_email = ?)";
-        String queryCarrello = "DELETE FROM Carrello WHERE cliente_email = ?";
-        Connection connection = null;
+        String queryProdottoCarrello =
+                "DELETE FROM ProdottoCarrello WHERE carrello_id = (SELECT id FROM Carrello WHERE cliente_email = ?)";
+        String queryCarrello =
+                "DELETE FROM Carrello WHERE cliente_email = ?";
 
-        try {
-            connection = ds.getConnection();
-
-            // Avvia una transazione
+        try (Connection connection = ds.getConnection()) {
             connection.setAutoCommit(false);
 
-            try (PreparedStatement psProdottoCarrello = connection.prepareStatement(queryProdottoCarrello)) {
+            try (PreparedStatement psProdottoCarrello = connection.prepareStatement(queryProdottoCarrello);
+                 PreparedStatement psCarrello = connection.prepareStatement(queryCarrello)) {
+
                 psProdottoCarrello.setString(1, email);
                 psProdottoCarrello.executeUpdate();
-            }
 
-            try (PreparedStatement psCarrello = connection.prepareStatement(queryCarrello)) {
                 psCarrello.setString(1, email);
                 psCarrello.executeUpdate();
-            }
 
-            // Conferma la transazione
-            connection.commit();
+                connection.commit();
+            } catch (SQLException ex) {
+                // se qualcosa va male durante i DELETE, rollback della transazione
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+                throw ex; // rilancia per finire nel catch esterno
+            } finally {
+                // best-effort: ripristina autocommit prima della chiusura
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException ignore) {
+                    // ignore / log se preferisci
+                }
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                // In caso di errore, esegui il rollback
-                if (connection != null) {
-                    connection.rollback();
-                }
-            } catch (SQLException rollbackEx) {
-                rollbackEx.printStackTrace();
-            }
-        } finally {
-            try {
-                // Ripristina l'auto-commit
-                if (connection != null) {
-                    connection.setAutoCommit(true);
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
-
-
-
-
 }
