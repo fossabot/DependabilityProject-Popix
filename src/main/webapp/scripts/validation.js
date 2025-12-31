@@ -76,7 +76,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validateForm() {
-        return validateUser() && validateEmailInput() && validatePasswordInput() && validatePasswordConfirm();
+        return validateUser() &&
+            validateEmailInput() &&
+            validatePasswordInput() &&
+            validatePasswordConfirm();
+    }
+
+    /**
+     * Allow only safe redirects:
+     * - relative paths (e.g. /login)
+     * - same-origin absolute URLs
+     */
+    function isSafeRedirect(url) {
+        if (!url) return false;
+
+        // Relative path
+        if (url.startsWith('/')) {
+            return true;
+        }
+
+        // Same-origin absolute URL
+        try {
+            const targetUrl = new URL(url, window.location.origin);
+            return targetUrl.origin === window.location.origin;
+        } catch (e) {
+            return false;
+        }
     }
 
     function registerUser() {
@@ -88,9 +113,11 @@ document.addEventListener('DOMContentLoaded', function () {
         let url = contextPath + '/register';
         xhr.open('POST', url, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 let response = JSON.parse(xhr.responseText);
+
                 if (response.status === "success") {
                     Swal.fire({
                         icon: 'success',
@@ -98,7 +125,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: response.message,
                         confirmButtonText: 'Ok'
                     }).then(() => {
-                        window.location.href = response.redirect;
+                        if (isSafeRedirect(response.redirect)) {
+                            window.location.href = response.redirect;
+                        } else {
+                            console.error('Unsafe redirect blocked:', response.redirect);
+                        }
                     });
                 } else if (response.status === "error") {
                     if (response.message === "Email già registrata.") {
@@ -119,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         };
+
         xhr.send(
             'username=' + encodeURIComponent(usernameInput) +
             '&email=' + encodeURIComponent(emailInput) +
