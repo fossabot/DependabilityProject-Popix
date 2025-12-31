@@ -13,11 +13,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
     private ProdottoDAO prodottoDAO;
+    private static final Logger LOGGER = Logger.getLogger(LogoutServlet.class.getName());
 
     // produzione
     public LogoutServlet() {
@@ -41,7 +44,7 @@ public class LogoutServlet extends HttpServlet {
                     prodottoDAO.saveCartToDatabase(userEmail, cart);
                     session.removeAttribute("cart");
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.SEVERE, "SQL error saving cart during logout", e);
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     response.getWriter().write("Errore durante il salvataggio del carrello.");
                     return;

@@ -7,10 +7,13 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProdottoDAOImpl implements ProdottoDAO {
 
     private final DataSource ds;
+    private static final Logger LOGGER = Logger.getLogger(ProdottoDAOImpl.class.getName());
 
     /*@ public model boolean available;
       @ public invariant ds != null && available;
@@ -50,7 +53,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
             statement.setString(8, prodotto.getFigure());  // Set the figure field
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in saveProdotto", e);
         }
         return false;
     }
@@ -80,7 +83,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getProdottoById", e);
         }
         return null;
     }
@@ -114,7 +117,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 ));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getProdottiByBrand", e);
         }
         return prodotti;
     }
@@ -148,7 +151,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 ));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getProdottiByBrandAndPrice", e);
         }
         return prodotti;
     }
@@ -177,7 +180,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 ));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getProdottiSortedByPrice", e);
         }
         return prodotti;
     }
@@ -198,7 +201,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 return resultSet.getBytes("img");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getProductImageById", e);
         }
         return null;
     }
@@ -228,7 +231,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 products.add(prodotto);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getAllProducts", e);
         }
         return products;
     }
@@ -515,7 +518,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
             return rowsUpdatedProdotto > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in updateProduct", e);
             return false;
         }
     }

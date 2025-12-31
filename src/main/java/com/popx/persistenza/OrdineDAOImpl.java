@@ -6,10 +6,13 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OrdineDAOImpl implements OrdineDAO {
 
     private DataSource ds;
+    private static final Logger LOGGER = Logger.getLogger(OrdineDAOImpl.class.getName());
 
     /*@ public model boolean available;
       @ public invariant ds != null && available;
@@ -53,7 +56,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             return affectedRows > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in insertOrdine", e);
             return false; // Restituisce false in caso di errore
         }
     }
@@ -85,7 +88,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getOrdineById", e);
         }
 
         return ordine;
@@ -115,7 +118,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getAllOrdini", e);
         }
 
         return ordini;
@@ -151,7 +154,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getOrdiniByCliente", e);
         }
 
         return ordini;
@@ -175,7 +178,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in countOrdiniByCliente", e);
         }
         return count;
     }
@@ -208,7 +211,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getOrdiniByClientePaginati", e);
         }
         return ordini;
     }
@@ -241,7 +244,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getOrdiniPaginati", e);
         }
 
         return ordini;
@@ -264,7 +267,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 count = rs.getInt(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in countTuttiOrdini", e);
         }
 
         return count;
@@ -291,7 +294,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             int rowsUpdated = preparedStatement.executeUpdate();
             return rowsUpdated > 0; // Restituisce true se almeno una riga è stata aggiornata
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in updateStatus", e);
             return false; // Gestisce l'errore restituendo false
         }
     }

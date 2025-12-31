@@ -8,11 +8,14 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet("/UpdateOrderStatus")
 public class UpdateStatusServlet extends HttpServlet {
 
     private final OrdineDAO ordineDAO;
+    private static final Logger LOGGER = Logger.getLogger(UpdateStatusServlet.class.getName());
 
     // 👉 production
     public UpdateStatusServlet() {
@@ -62,7 +65,7 @@ public class UpdateStatusServlet extends HttpServlet {
             response.getWriter().write("{\"success\": " + success + "}");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error updating order status in UpdateStatusServlet", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"success\": false}");
         }

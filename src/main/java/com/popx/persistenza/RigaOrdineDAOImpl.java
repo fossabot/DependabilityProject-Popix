@@ -9,10 +9,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RigaOrdineDAOImpl implements RigaOrdineDAO {
 
     private DataSource ds;
+    private static final Logger LOGGER = Logger.getLogger(RigaOrdineDAOImpl.class.getName());
 
     /*@ public model boolean available;
       @ public invariant ds != null && available;
@@ -47,7 +50,7 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in addRigaOrdine", e);
         }
     }
 
@@ -84,7 +87,7 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in getRigheOrdineByOrdineId", e);
         }
 
         return righeOrdine;
@@ -114,7 +117,7 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in updateRigaOrdine", e);
         }
     }
 
@@ -137,7 +140,7 @@ public class RigaOrdineDAOImpl implements RigaOrdineDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in deleteRigaOrdine", e);
         }
     }
 }

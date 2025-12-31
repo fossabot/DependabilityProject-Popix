@@ -5,9 +5,12 @@ import com.popx.modello.ProdottoCarrelloBean;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CarrelloDAOImpl implements CarrelloDAO {
     private DataSource ds;
+    private static final Logger LOGGER = Logger.getLogger(CarrelloDAOImpl.class.getName());
 
     /*@ public model boolean available;
       @ public invariant ds != null && available;
@@ -77,7 +80,7 @@ public class CarrelloDAOImpl implements CarrelloDAO {
             connection.commit();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in salvaCarrello", e);
         }
     }
 
@@ -134,7 +137,7 @@ public class CarrelloDAOImpl implements CarrelloDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in ottieniCarrelloPerEmail", e);
         }
 
         return carrello != null ? carrello : new CarrelloBean(email, prodottiCarrello);
@@ -170,7 +173,7 @@ public class CarrelloDAOImpl implements CarrelloDAO {
                 try {
                     connection.rollback();
                 } catch (SQLException rollbackEx) {
-                    rollbackEx.printStackTrace();
+                    LOGGER.log(Level.SEVERE, "Error during rollback in clearCartByUserEmail", rollbackEx);
                 }
                 throw ex; // rilancia per finire nel catch esterno
             } finally {
@@ -183,7 +186,7 @@ public class CarrelloDAOImpl implements CarrelloDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "SQL error in clearCartByUserEmail", e);
         }
     }
 }
