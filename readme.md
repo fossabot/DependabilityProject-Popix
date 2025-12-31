@@ -153,7 +153,7 @@ All tests are executed automatically during the Maven build lifecycle and as par
 
 Continuous Integration is implemented using GitHub Actions.
 
-The repository includes a CI workflow located at .github/workflows/ci.yml, which is triggered on every push and pull request to the main branch, excluding documentation-only changes.
+The repository includes a CI workflow located at ```.github/workflows/ci.yml```, which is triggered on every push and pull request to the main branch, excluding documentation-only changes.
 
 The CI pipeline:
 - sets up Java 21
@@ -163,8 +163,9 @@ The CI pipeline:
 - uploads coverage results to Codecov
 
 The CI pipeline executes the following command:
-
+```bash
 mvn clean test package
+```
 
 Docker-based builds are supported locally as a reproducible execution environment but are not executed as part of the CI pipeline.
 
