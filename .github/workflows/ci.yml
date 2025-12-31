@@ -64,15 +64,3 @@ jobs:
           name: popix-jacoco
           disable_search: true
           fail_ci_if_error: false
-
-      - name: SonarCloud scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=dscap02
-            -Dsonar.projectKey=dscap02_DependabilityProject-Popix
-            -Dsonar.projectName=Pop!x
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-            -Dsonar.java.binaries=target/classes
