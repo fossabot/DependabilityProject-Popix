@@ -25,7 +25,8 @@ RUN mvn dependency:copy-dependencies \
 # ==========================================
 # STAGE 2: Runtime (Tomcat 9 + JDK 21)
 # ==========================================
-FROM tomcat:9.0.86-jdk21
+FROM tomcat:9.0.113-jdk21
+
 
 # 1. Pulizia: Rimuovi le webapp di default di Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
