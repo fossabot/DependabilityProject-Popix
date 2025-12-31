@@ -4,6 +4,7 @@
 <%@ page import="com.popx.modello.OrdineBean" %>
 <%@ page import="com.popx.modello.RigaOrdineBean" %>
 <%@ page import="com.popx.persistenza.*" %>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -44,7 +45,11 @@
     // Recupero della pagina corrente dai parametri di richiesta
     int currentPage = 1; // Default alla prima pagina
     if (request.getParameter("page") != null) {
-        currentPage = Integer.parseInt(request.getParameter("page"));
+        try {
+            currentPage = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
     }
 
     // Definizione dei parametri di paginazione
@@ -54,7 +59,11 @@
 
     ProdottoDAO prodottoDAO = new ProdottoDAOImpl();
     ProdottoBean prodottoBean = null;
-    
+
+    // Variabili safe per paginazione (calcolate una sola volta)
+    String safeCurrentPage = StringEscapeUtils.escapeHtml4(String.valueOf(currentPage));
+    String safePrevPage = StringEscapeUtils.escapeHtml4(String.valueOf(Math.max(1, currentPage - 1)));
+    String safeNextPage = StringEscapeUtils.escapeHtml4(String.valueOf(Math.min(totalPages, currentPage + 1)));
 
     // Recupero degli ordini paginati per l'utente
     List<OrdineBean> ordini = ordineDAO.getOrdiniByClientePaginati(email, currentPage, recordsPerPage);
@@ -80,13 +89,19 @@
                 for (RigaOrdineBean riga : righeOrdine) {
                     prodottoBean = prodottoDAO.getProdottoById(riga.getProdottoId());
 
+                    // Calcolo variabili "safe" per ogni riga (una sola volta per riga)
+                    String safeOrdineId = StringEscapeUtils.escapeHtml4(String.valueOf(ordine.getId()));
+                    String safeProductName = prodottoBean.getName() != null ? StringEscapeUtils.escapeHtml4(prodottoBean.getName()) : "";
+                    String safeUnitaryCost = StringEscapeUtils.escapeHtml4(String.valueOf(riga.getUnitaryCost()));
+                    String safeQuantity = StringEscapeUtils.escapeHtml4(String.valueOf(riga.getQuantity()));
+                    String safeOrderDate = ordine.getDataOrdine() != null ? StringEscapeUtils.escapeHtml4(String.valueOf(ordine.getDataOrdine())) : "";
         %>
         <tr>
-            <td><%= ordine.getId() %></td>
-            <td><%=  prodottoBean.getName() %></td> <!-- Supponendo che `Prodotto` abbia un metodo `getName()` -->
-            <td><%= riga.getUnitaryCost() %></td>
-            <td><%= riga.getQuantity() %></td>
-            <td><%= ordine.getDataOrdine() %></td>
+            <td><%= safeOrdineId %></td>
+            <td><%= safeProductName %></td> <!-- Nome prodotto escappato -->
+            <td><%= safeUnitaryCost %></td>
+            <td><%= safeQuantity %></td>
+            <td><%= safeOrderDate %></td>
         </tr>
         <%
                 }
@@ -99,19 +114,20 @@
     <nav aria-label="Navigazione pagine" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item <%= currentPage == 1 ? "disabled" : "" %>">
-                <a class="page-link" href="?page=<%= currentPage - 1 %>">Precedente</a>
+                <a class="page-link" href="?page=<%= safePrevPage %>">Precedente</a>
             </li>
             <%
                 for (int i = 1; i <= totalPages; i++) {
+                    String safeI = StringEscapeUtils.escapeHtml4(String.valueOf(i));
             %>
             <li class="page-item <%= currentPage == i ? "active" : "" %>">
-                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                <a class="page-link" href="?page=<%= safeI %>"><%= safeI %></a>
             </li>
             <%
                 }
             %>
             <li class="page-item <%= currentPage == totalPages ? "disabled" : "" %>">
-                <a class="page-link" href="?page=<%= currentPage + 1 %>">Successivo</a>
+                <a class="page-link" href="?page=<%= safeNextPage %>">Successivo</a>
             </li>
         </ul>
     </nav>
