@@ -67,7 +67,9 @@ The application can be built locally using the standard Maven lifecycle.
 
 Build and test the application using:
 
+```bash
 mvn clean test
+```
 
 This command:
 - compiles the source code
@@ -76,68 +78,60 @@ This command:
 
 To package the application, run:
 
+```bash
 mvn clean package
+```
 
 This produces the deployable artifact:
 
+```text
 target/popix-1.0-SNAPSHOT.war
-
+```
 The generated WAR file can be deployed on a servlet container compatible with the Java EE / javax.servlet specification, such as Apache Tomcat 9.
 
 ---
 
 ## Containerized Build (Docker)
 
-The application can also be built and executed in a fully isolated environment using Docker.
+The application can be built and executed in a fully isolated and reproducible environment using Docker and Docker Compose. The project includes a multi-stage Dockerfile designed to ensure consistency between local development and containerized execution.
 
-The project includes a multi-stage Dockerfile:
+The **build stage** uses Maven 3.9 with OpenJDK 21 to compile the application and produce the WAR artifact. The **runtime stage** is based on Apache Tomcat 9 with OpenJDK 21 and deploys the generated WAR as the ROOT application. This approach guarantees reproducible builds and a controlled runtime environment.
 
-Build stage:
-- Maven 3.9
-- OpenJDK 21
-- Compiles the application and produces the WAR artifact
+The application requires runtime configuration through environment variables. For this purpose, the repository provides a template file named `.env.example`. Users must create a local `.env` file from this template; the `.env` file is intentionally excluded from version control to avoid committing sensitive data.
 
-Runtime stage:
-- Apache Tomcat 9
-- OpenJDK 21
-- Deploys the WAR as the ROOT application
+To prepare the environment configuration, run:
 
-This approach ensures reproducible builds and consistency across local and containerized environments.
+```bash
+cp .env.example .env
+```
 
-To build the containers:
+Then edit the .env file and provide your own values:
 
-docker compose build
+```bash
+MYSQL_ROOT_PASSWORD=your_root_password
+MYSQL_DATABASE=Popix
+MYSQL_USER=popix
+MYSQL_PASSWORD=your_password
+POPIX_DB_URL=jdbc:mysql://db:3306/Popix?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 
-This step builds the application Docker image and executes the Maven build inside a controlled JDK 21 environment.
+```
+Once the environment variables are configured, the Docker images can be built using:
 
-To run the application:
+```bash
+docker-compose build
+```
+This command builds the application Docker image and executes the Maven build inside a controlled JDK 21 environment. To start the full application stack, run:
 
-docker compose up
-
-This will start:
-- the application container (Apache Tomcat)
-- the MySQL database container
-
-The database is automatically initialized using the SQL scripts located in:
-
-src/database/01-createDB.sql  
-src/database/02-InsertDB.sql
-
-No manual database setup is required.
-
----
-
-## Environment Configuration
-
-Environment variables are used to configure the database connection and are injected at runtime through Docker Compose.
-
-Example variables:
-- MYSQL_ROOT_PASSWORD
-- MYSQL_USER
-- MYSQL_PASSWORD
-- MYSQL_DATABASE
-
-This configuration approach allows the same setup to be reused consistently across local and containerized environments.
+```bash
+docker-compose up
+```
+This will start both the application container (Apache Tomcat) and the MySQL database container. 
+The database is automatically initialized at startup using the SQL scripts located in 
+```bash
+src/database/01-createDB.sql 
+src/database/02-InsertDB.sql.
+```
+ No manual database setup is required.
 
 ---
 
@@ -179,8 +173,8 @@ Docker-based builds are supported locally as a reproducible execution environmen
 ## Build Artifacts
 
 The build process produces the following artifacts:
-- WAR file: target/popix-1.0-SNAPSHOT.war
-- Test reports: target/surefire-reports
+- WAR file: ``` target/popix-1.0-SNAPSHOT.war ```
+- Test reports: ``` target/surefire-reports```
 - Coverage reports generated during CI (JaCoCo XML and HTML)
 
 ---
