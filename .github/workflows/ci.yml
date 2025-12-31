@@ -8,6 +8,9 @@ on:
       - 'deliverables/**'
       - '.gitignore'
       - '.dockerignore'
+      - 'Dockerfile'
+      - 'docker/**'
+      - '.github/workflows/dockerhub.yml'
 
   pull_request:
     branches: [ "main" ]
@@ -16,6 +19,9 @@ on:
       - 'deliverables/**'
       - '.gitignore'
       - '.dockerignore'
+      - 'Dockerfile'
+      - 'docker/**'
+      - '.github/workflows/dockerhub.yml'
 
 permissions:
   contents: read
