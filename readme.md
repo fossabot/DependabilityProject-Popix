@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/dscap02/DependabilityProject-Popix/actions/workflows/ci.yml/badge.svg)](https://github.com/dscap02/DependabilityProject-Popix/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/dscap02/DependabilityProject-Popix/branch/main/graph/badge.svg)](https://codecov.io/gh/dscap02/DependabilityProject-Popix)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdscap02%2FDependabilityProject-Popix.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdscap02%2FDependabilityProject-Popix?ref=badge_shield)
 
 ---
 
@@ -292,3 +293,7 @@ Pop!x is designed to be:
 - independent from development environments
 
 The combined use of Maven, Docker, and GitHub Actions ensures portability, reliability, and consistency across all supported execution environments, aligning the project with software dependability best practices.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdscap02%2FDependabilityProject-Popix.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdscap02%2FDependabilityProject-Popix?ref=badge_large)
