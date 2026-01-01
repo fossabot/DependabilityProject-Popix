@@ -147,6 +147,61 @@ The project adopts a multi-layered testing strategy aligned with software depend
 
 All tests are executed automatically during the Maven build lifecycle and as part of the CI pipeline.
 
+In addition to functional and integration testing, the project also includes
+a dedicated performance evaluation phase based on microbenchmarking,
+which is documented separately.
+
+---
+
+# Performance Evaluation with JMH Microbenchmarks
+
+Beyond functional correctness and test effectiveness, Pop!x includes a performance-oriented evaluation  
+based on JMH (Java Microbenchmark Harness).
+
+JMH is used to analyze CPU-bound and frequently executed logic in isolation from the web container,  
+network stack, and database I/O, ensuring accurate and reproducible measurements.
+
+## Benchmarked areas include:
+- Cart subtotal calculation  
+  Comparison between a traditional for loop and Java Streams across varying cart sizes.
+- Catalog filtering logic  
+  Evaluation of filtering strategies (loop vs streams) as catalog size grows.
+- Security-related cryptographic operations  
+  Measurement of BCrypt password hashing and verification costs for different password lengths.
+
+Each benchmark is parameterized to simulate realistic workload growth and executed using  
+JMH warm-up, measurement, and statistical aggregation mechanisms.
+
+## Benchmark Execution Scope
+Benchmarks are executed locally as a dedicated evaluation step.  
+They are not part of the Maven test phase.  
+They are not executed in CI/CD.
+
+This separation is intentional:
+- microbenchmarks are highly sensitive to hardware and execution environment
+- CI environments are unsuitable for reliable performance measurements
+- keeping performance evaluation separate avoids polluting functional test metrics
+
+Benchmark results are exported as CSV files, which represent the authoritative data source.
+
+---
+
+## Published Analysis Artifacts
+All analysis artifacts are published via GitHub Pages to ensure transparency,  
+reproducibility, and external inspection.
+
+Published artifacts include:
+- JaCoCo code coverage reports
+- PiTest mutation testing reports
+- JMH microbenchmark results  
+
+
+JMH results are preserved in CSV format as primary artifacts and rendered client-side  
+as HTML tables for readability.
+
+📎 Full reports are available at:  
+https://dscap02.github.io/DependabilityProject-Popix/
+
 ---
 
 ## CI/CD Compatibility
@@ -175,7 +230,7 @@ Docker-based builds are supported locally as a reproducible execution environmen
 
 The build process produces the following artifacts:
 - WAR file: ``` target/popix-1.0-SNAPSHOT.war ```
-- Test reports: ``` target/surefire-reports```
+- Test reports: ```target/surefire-reports```
 - Coverage reports generated during CI (JaCoCo XML and HTML)
 
 ---
@@ -186,11 +241,8 @@ The build process produces the following artifacts:
 
 The project integrates **SonarCloud** to continuously assess code quality attributes such as **reliability**, **security**, **maintainability**, **code duplication**, and **test coverage**.
 
-SonarCloud analysis is executed through a dedicated GitHub Actions workflow located at:
+SonarCloud analysis is executed through a dedicated GitHub Actions workflow located at: ``` .github/workflows/ci-sonar.yml```
 
-```text
-.github/workflows/ci-sonar.yml
-```
 
 
 This workflow is triggered **only after the main CI pipeline (build and test) completes successfully**, ensuring that static analysis is performed exclusively on buildable and tested code. This separation allows build correctness and code quality to be evaluated independently, in line with software dependability best practices.
@@ -207,12 +259,17 @@ The SonarCloud Quality Gate configured for this project includes a default thres
 * **Maintainability rating:** A.
 * **Code duplication:** Kept below 5%.
 
-This behavior is expected and reflects the **intrinsic difficulty of achieving very high coverage in servlet-based web applications**, where significant portions of logic depend on container-managed components (HTTP requests, sessions, responses) and integration behavior rather than pure unit-level execution.
+<blockquote>
+  <p><strong>⚠️ IMPORTANT</strong></p>
+  <p>This behavior is expected and reflects the <strong>intrinsic difficulty of achieving very high coverage in servlet-based web applications</strong>, where significant portions of logic depend on container-managed components (HTTP requests, sessions, responses) and integration behavior rather than pure unit-level execution.</p>
+  <p>The Quality Gate failure <strong>does not indicate build or functional failure</strong>:</p>
+  <ul>
+    <li>The main CI pipeline completes successfully.</li>
+    <li>All automated tests pass.</li>
+    <li>The application is fully buildable and deplo</li>
+  </ul>
+</blockquote>
 
-> The Quality Gate failure **does not indicate build or functional failure**:
-> * The main CI pipeline completes successfully.
-> * All automated tests pass.
-> * The application is fully buildable and deployable.
 
 For this reason, SonarCloud is used primarily as a **code quality reporting and analysis tool**, rather than as a hard blocking mechanism for the CI pipeline.
 
