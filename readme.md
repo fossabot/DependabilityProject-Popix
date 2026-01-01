@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/dscap02/DependabilityProject-Popix/actions/workflows/ci.yml/badge.svg)](https://github.com/dscap02/DependabilityProject-Popix/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/dscap02/DependabilityProject-Popix/branch/main/graph/badge.svg)](https://codecov.io/gh/dscap02/DependabilityProject-Popix)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dscap02_DependabilityProject-Popix&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dscap02_DependabilityProject-Popix)
+
 ---
 
 ## Overview
@@ -180,6 +180,52 @@ The build process produces the following artifacts:
 
 ---
 
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=dscap02_DependabilityProject-Popix)
+## SonarCloud Code Quality Analysis
+
+
+The project integrates **SonarCloud** to continuously assess code quality attributes such as **reliability**, **security**, **maintainability**, **code duplication**, and **test coverage**.
+
+SonarCloud analysis is executed through a dedicated GitHub Actions workflow located at:
+
+```text
+.github/workflows/ci-sonar.yml
+```
+
+
+This workflow is triggered **only after the main CI pipeline (build and test) completes successfully**, ensuring that static analysis is performed exclusively on buildable and tested code. This separation allows build correctness and code quality to be evaluated independently, in line with software dependability best practices.
+
+---
+
+### Quality Gate and Coverage Considerations
+
+The SonarCloud Quality Gate configured for this project includes a default threshold of **80% test coverage on New Code**. At the current stage, the Quality Gate may fail due to coverage below this threshold, even though:
+
+* **Security vulnerabilities:** None open.
+* **Security hotspots:** All resolved.
+* **Reliability rating:** A.
+* **Maintainability rating:** A.
+* **Code duplication:** Kept below 5%.
+
+This behavior is expected and reflects the **intrinsic difficulty of achieving very high coverage in servlet-based web applications**, where significant portions of logic depend on container-managed components (HTTP requests, sessions, responses) and integration behavior rather than pure unit-level execution.
+
+> The Quality Gate failure **does not indicate build or functional failure**:
+> * The main CI pipeline completes successfully.
+> * All automated tests pass.
+> * The application is fully buildable and deployable.
+
+For this reason, SonarCloud is used primarily as a **code quality reporting and analysis tool**, rather than as a hard blocking mechanism for the CI pipeline.
+
+---
+
+### Transparency and Dependability Perspective
+
+Rather than weakening the Quality Gate or artificially inflating coverage metrics, the project intentionally preserves SonarCloud’s default rules to provide a **realistic and transparent view of code quality trade-offs**.
+
+This approach aligns with the goals of software dependability by:
+1.  **Prioritizing correctness**, robustness, and test validity over metric gaming.
+2.  **Clearly documenting limitations** and design choices.
+3.  **Maintaining traceability** between CI results, test strategy, and static analysis outcomes.
 ## Summary
 
 Pop!x is designed to be:
